@@ -2,9 +2,6 @@
   "default": {
     "timeout": 120
   },
-  "account": {
-    "id": ""
-  },
   "db": {
     "table": {
       "note": {

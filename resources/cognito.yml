@@ -2,7 +2,7 @@
 # This example requires MFA and validates the phone number to use as MFA
 # Other fileds can be added to the schema
 UserPool:
-  Type: "AWS::Cognito::UserPool"
+  Type: 'AWS::Cognito::UserPool'
   Properties:
     UserPoolName: ${self:custom.base}-userpool
     UserPoolAttributes:
@@ -19,7 +19,7 @@ UserPool:
 
 # Creates a User Pool Client to be used by identity pool
 UserPoolClient:
-  Type: "AWS::Cognito::UserPoolClient"
+  Type: 'AWS::Cognito::UserPoolClient'
   Properties:
     ClientName: ${self:custom.base}-client
     GenerateSecret: false
@@ -28,7 +28,7 @@ UserPoolClient:
 
 # Creates a federated Identity Pool
 IdentityPool:
-  Type: "AWS::Cognito::IdentityPool"
+  Type: 'AWS::Cognito::IdentityPool'
   Properties:
     IdentityPoolName: serverlessappsyncbackend2${self:provider.stage}identity
     AllowUnauthenticatedIdentities: true
@@ -41,83 +41,83 @@ IdentityPool:
             - ProviderName
 
 # Create a role for unauthorizee access to AWS resources. Very limited access. Only allows users in the previously created Identity Pool
-CognitoUnauthenticatedRole:
-  Type: "AWS::IAM::Role"
+CognitoUnAuthorizedRole:
+  Type: 'AWS::IAM::Role'
   Properties:
     RoleName: { self:custom.role.cognito.unAuth.name }
     AssumeRolePolicyDocument:
-      Version: "2012-10-17"
+      Version: '2012-10-17'
       Statement:
-        - Effect: "Allow"
+        - Effect: 'Allow'
           Principal:
-            Federated: "cognito-identity.amazonaws.com"
+            Federated: 'cognito-identity.amazonaws.com'
           Action:
-            - "sts:AssumeRoleWithWebIdentity"
+            - 'sts:AssumeRoleWithWebIdentity'
           Condition:
             StringEquals:
-              "cognito-identity.amazonaws.com:aud":
+              'cognito-identity.amazonaws.com:aud':
                 Ref: IdentityPool
             # "ForAnyValue:StringLike":
             #    "cognito-identity.amazonaws.com:amr": unauthenticated
     Policies:
       - PolicyName: ${self:custom.role.cognito.unAuth.name}-Policy
         PolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
-            - Effect: "Allow"
+            - Effect: 'Allow'
               Action:
-                - "mobileanalytics:PutEvents"
-                - "cognito-sync:*"
-                - "cognito-identity:*"
-              Resource: "*"
+                - 'mobileanalytics:PutEvents'
+                - 'cognito-sync:*'
+                - 'cognito-identity:*'
+              Resource: '*'
             - Effect:
               Action:
                 - appsync:GraphQL
               # TODO: replace apis/*/* with apis/<graphql_id/*
               Resource:
-                - arn:aws:appsync:${self:provider.stage}:${self:custom.account.id}:apis/*/types/Query/fields/getNote
+                - arn:aws:appsync:${self:provider.stage}:#{AWS::AccountId}:apis/*/types/Query/fields/getNote
 
 # Create a role for authorizee access to AWS resources. Control what your user can access. Thos example only allows lambda invocation
 # Only allows users in the previously created Identity Pool
-CognitoUnauthenticatedRole:
-  Type: "AWS::IAM::Role"
+CognitoAuthorizedRole:
+  Type: 'AWS::IAM::Role'
   Properties:
     RoleName: { self:custom.role.cognito.auth.name }
     AssumeRolePolicyDocument:
-      Version: "2012-10-17"
+      Version: '2012-10-17'
       Statement:
-        - Effect: "Allow"
+        - Effect: 'Allow'
           Principal:
-            Federated: "cognito-identity.amazonaws.com"
+            Federated: 'cognito-identity.amazonaws.com'
           Action:
-            - "sts:AssumeRoleWithWebIdentity"
+            - 'sts:AssumeRoleWithWebIdentity'
           Condition:
             StringEquals:
-              "cognito-identity.amazonaws.com:aud":
+              'cognito-identity.amazonaws.com:aud':
                 Ref: IdentityPool
             # "ForAnyValue:StringLike":
             #    "cognito-identity.amazonaws.com:amr": authenticated
     Policies:
       - PolicyName: ${self:custom.role.cognito.auth.name}-Policy
         PolicyDocument:
-          Version: "2012-10-17"
+          Version: '2012-10-17'
           Statement:
-            - Effect: "Allow"
+            - Effect: 'Allow'
               Action:
-                - "mobileanalytics:PutEvents"
-                - "cognito-sync:*"
-                - "cognito-identity:*"
-              Resource: "*"
+                - 'mobileanalytics:PutEvents'
+                - 'cognito-sync:*'
+                - 'cognito-identity:*'
+              Resource: '*'
             - Effect:
               Action:
                 - appsync:GraphQL
               # TODO: replace apis/*/* with apis/<graphql_id/*
               Resource:
-                - arn:aws:appsync:${self:provider.stage}:${self:custom.account.id}:apis/*/*
+                - arn:aws:appsync:${self:provider.stage}:#{AWS::AccountId}:apis/*/*
 
 # Assign the roles to the Identity Pool
 IdentityPoolRoleMapping:
-  Type: "AWS::Cognito::IdentityPoolRoleAttachment"
+  Type: 'AWS::Cognito::IdentityPoolRoleAttachment'
   Properties:
     IdentityPoolId:
       Ref: IdentityPool

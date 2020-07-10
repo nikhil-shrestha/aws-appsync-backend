@@ -4,6 +4,7 @@ plugins:
   - serverless-plugin-additional-stacks
   - serverless-iam-roles-per-function
   - serverless-plugin-include-dependencies
+  - serverless-pseudo-parameters
 
 provider:
   name: aws
@@ -14,12 +15,12 @@ provider:
   stage: ${opt:stage, "test"}
 
 custom:
+  accountId: #{AWS::AccountId}
   base: ${self:service}-${self:provider.stage}
-  account: ${file(./config/config.${self:provider.stage}.json):account}
   db: ${file(./config/config.${self:provider.stage}.json):db}
   # Base naming convention for all resources
-  cognitoService: ${self:custom.base}-cognito
-  dynamoDBService: ${self:custom.base}-dynamodb
+  cognitoStackName: ${self:custom.base}-cognito
+  dynamoDBStackName: ${self:custom.base}-dynamodb
 
   # User Pool Id import from Cognito stack
   userPoolId:
@@ -27,7 +28,7 @@ custom:
 
   # IAM
   role:
-    arn: arn:aws:iam::${self:custom.account.id}:role
+    arn: arn:aws:iam::#{AWS::AccountId}:role
     cognito:
       auth:
         name: ${self:custom.base}-auth-CognitoRole

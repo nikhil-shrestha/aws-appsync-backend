@@ -4,7 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "deploy": "bash ./scripts/deploy.bash"
   },
   "repository": {
     "type": "git",
@@ -21,7 +22,8 @@
     "aws-sdk": "^2.713.0",
     "serverless-iam-roles-per-function": "^2.0.2",
     "serverless-plugin-additional-stacks": "^1.4.0",
-    "serverless-plugin-include-dependencies": "^4.1.0"
+    "serverless-plugin-include-dependencies": "^4.1.0",
+    "serverless-pseudo-parameters": "^2.5.0"
   },
   "dependencies": {
     "serverless": "^1.74.1"

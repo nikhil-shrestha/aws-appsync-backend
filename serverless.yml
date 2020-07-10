@@ -1,5 +1,10 @@
 service: aws-appsync-backend-file
 
+plugins:
+  - serverless-plugin-additional-stacks
+  - serverless-iam-roles-per-function
+  - serverless-plugin-include-dependencies
+
 provider:
   name: aws
   runtime: nodejs12.x
@@ -7,3 +12,11 @@ provider:
   region: us-west-2
   timeout: 120
   stage: ${opt:stage, "test"}
+
+custom:
+  base: ${self:service}-${self:provider.stage}
+  account: ${file(./config/config.${self:provider.stage}.json):account}
+  db: ${file(./config/config.${self:provider.stage}.json):db}
+  # Base naming convention for all resources
+  cognitoService: ${self:custom.base}-cognito
+  dynamoDBService: ${self:custom.base}-dynamodb

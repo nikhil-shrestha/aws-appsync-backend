@@ -3,3 +3,7 @@ service: aws-appsync-backend-file
 provider:
   name: aws
   runtime: nodejs12.x
+  profile: skilltransfers
+  region: us-west-2
+  timeout: 120
+  stage: ${opt:stage, "test"}

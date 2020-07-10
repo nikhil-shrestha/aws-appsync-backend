@@ -20,3 +20,36 @@ custom:
   # Base naming convention for all resources
   cognitoService: ${self:custom.base}-cognito
   dynamoDBService: ${self:custom.base}-dynamodb
+
+  # User Pool Id import from Cognito stack
+  userPoolId:
+    Fn::ImportValue: ${self:custom.cognitoStackName}:${self:provider.stage}:${self:custom.base}-UserPoolId
+
+  # IAM
+  role:
+    arn: arn:aws:iam::${self:custom.account.id}:role
+    cognito:
+      auth:
+        name: ${self:custom.base}-auth-CognitoRole
+        arn: ${self:custom.role.arn}/${self:custom.role.cognito.auth.name}
+      unAuth:
+        name: ${self:custom.base}-unAuth-CognitoRole
+        arn: ${self:custom.role.arn}/${self:custom.role.cognito.unAuth.name}
+
+  # Plugin: additionalStacks (nesting CF stacks)
+  additionalStacks:
+    # deploy cognitoResources stack
+    # create cognito user pool
+    # outputs cognito user pool info for appSyncResources stack
+    cognitoResources:
+      Deploy: Before
+      StackName: ${self:custom.cognitoStackName}
+      Resources: ${file(./resources/cognito.yml)}
+      Outputs: ${file(./resources/cognito-outputs.yml)}
+
+    # deploy dynaoDBResources stack
+    # create users table
+    dynaoDBResources:
+      Deploy: Before
+      StackName: ${self:custom.dynamoDBStackName}
+      Resources: ${file(./resources/dynamodb.yml)}

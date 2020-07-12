@@ -44,7 +44,7 @@ IdentityPool:
 CognitoUnAuthorizedRole:
   Type: 'AWS::IAM::Role'
   Properties:
-    RoleName: { self:custom.role.cognito.unAuth.name }
+    RoleName: ${self:custom.role.cognito.unAuth.name}
     AssumeRolePolicyDocument:
       Version: '2012-10-17'
       Statement:
@@ -82,7 +82,7 @@ CognitoUnAuthorizedRole:
 CognitoAuthorizedRole:
   Type: 'AWS::IAM::Role'
   Properties:
-    RoleName: { self:custom.role.cognito.auth.name }
+    RoleName: ${self:custom.role.cognito.auth.name}
     AssumeRolePolicyDocument:
       Version: '2012-10-17'
       Statement:

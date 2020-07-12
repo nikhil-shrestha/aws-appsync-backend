@@ -68,49 +68,49 @@ custom:
       StackName: ${self:custom.dynamoDBStackName}
       Resources: ${file(./resources/dynamodb.yml)}
 
-    appSync:
-      name: ${self:service}-${self:provider.stage}-api
-      authenticationType: AWS_IAM
-      logConfig:
-        loggingRoleArn: ${self:custom.role.logging.arn}
-        level: ALL
-      mappingTemplates:
-        ## DynamoDB Resolvers
-        - dataSource: Notes
-          type: Mutation
-          field: createNote
-          request: 'request/dynamodb/create-item-request-mapping-template.vtl'
-          response: 'response/generic-response-mapping-template.vtl'
-        - dataSource: Notes
-          type: Mutation
-          field: createNote
-          request: 'request/dynamodb/create-item-request-mapping-template.vtl'
-          response: 'response/generic-response-mapping-template.vtl'
-        - dataSource: Notes
-          type: Mutation
-          field: updateNote
-          request: 'request/dynamodb/update-item-request-mapping-template.vtl'
-          response: 'response/generic-response-mapping-template.vtl'
-        - dataSource: Notes
-          type: Query
-          field: batchGetNotes
-          request: 'request/dynamodb/batch-get-notes-request-mapping-template-${self:provider.stage}.vtl'
-          response: 'response/batch-get-notes-response-mapping-template-${self:provider.stage}.vtl'
-        - dataSource: Notes
-          type: Query
-          field: getNote
-          request: 'request/dynamodb/update-item-request-mapping-template.vtl'
-          response: 'response/generic-response-mapping-template.vtl'
-      mappingTemplatesLocation: # defaults to mapping-templates
-      # schema: ./schema-prod.graphql
-      serviceRole: AppSyncServiceRole
-      dataSources:
-        - type: AMAZON_DYNAMODB
-          name: Notes
-          description: 'Notes table'
-          config:
-            tableName: ${self:custom.db.table.note.name}
-            serviceRoleArn: ${self:custom.role.dynamodb.arn}
+  appSync:
+    name: ${self:service}-${self:provider.stage}-api
+    authenticationType: AWS_IAM
+    logConfig:
+      loggingRoleArn: ${self:custom.role.logging.arn}
+      level: ALL
+    mappingTemplates:
+      ## DynamoDB Resolvers
+      - dataSource: Notes
+        type: Mutation
+        field: createNote
+        request: 'request/dynamodb/create-item-request-mapping-template.vtl'
+        response: 'response/generic-response-mapping-template.vtl'
+      - dataSource: Notes
+        type: Mutation
+        field: createNote
+        request: 'request/dynamodb/create-item-request-mapping-template.vtl'
+        response: 'response/generic-response-mapping-template.vtl'
+      - dataSource: Notes
+        type: Mutation
+        field: updateNote
+        request: 'request/dynamodb/update-item-request-mapping-template.vtl'
+        response: 'response/generic-response-mapping-template.vtl'
+      - dataSource: Notes
+        type: Query
+        field: batchGetNotes
+        request: 'request/dynamodb/batch-get-notes-request-mapping-template-${self:provider.stage}.vtl'
+        response: 'response/batch-get-notes-response-mapping-template-${self:provider.stage}.vtl'
+      - dataSource: Notes
+        type: Query
+        field: getNote
+        request: 'request/dynamodb/update-item-request-mapping-template.vtl'
+        response: 'response/generic-response-mapping-template.vtl'
+    mappingTemplatesLocation: # defaults to mapping-templates
+    # schema: ./schema-prod.graphql
+    serviceRole: AppSyncServiceRole
+    dataSources:
+      - type: AMAZON_DYNAMODB
+        name: Notes
+        description: 'Notes table'
+        config:
+          tableName: ${self:custom.db.table.note.name}
+          serviceRoleArn: ${self:custom.role.dynamodb.arn}
 
 resources:
   Resources:
